@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BBB — Ball, Base, Back Up, Blast!</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <header id="game-title-bar" aria-label="B, B, B, Blast!">
+    <img class="title-svg" src="assets/images/bbb_blast_logo.svg" alt="B, B, B, Blast!">
+  </header>
+
+  <!-- Background overlay (rotates on screen change) -->
+  <div id="bg-overlay"></div>
+  <div id="park-label" aria-live="polite">
+    <span id="park-label-name"></span>
+    <span id="park-label-team"></span>
+  </div>
+
+  <!-- ===== LOGIN SCREEN ===== -->
+  <div id="screen-login" class="screen screen--active">
+    <div class="screen-inner">
+      <div class="logo">
+        <div class="logo-icon">⚾</div>
+        <h1 class="logo-title">Ball, Base, Back Up, Blast!</h1>
+        <p class="logo-tagline">Learn the game. Know your position.</p>
+      </div>
+
+      <div class="card">
+        <label class="field-label" for="name-input">What's your name?</label>
+        <input
+          id="name-input"
+          class="text-input"
+          type="text"
+          placeholder="Enter your name..."
+          maxlength="30"
+          autocomplete="off"
+        >
+        <p id="welcome-back" class="welcome-back" hidden>
+          👋 Welcome back, <strong id="welcome-name"></strong>!
+        </p>
+        <p id="name-error" class="field-error" hidden>Almost! Just enter your name above to get started.</p>
+        <button id="btn-play" class="btn btn--primary btn--full">Play Ball! ⚾</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== HOME SCREEN ===== -->
+  <div id="screen-home" class="screen">
+    <div class="screen-inner">
+      <header class="home-header">
+        <div>
+          <h2 id="home-player-name" class="home-title"></h2>
+          <p class="home-subtitle">Ready to play ball?</p>
+        </div>
+        <button id="btn-logout" class="btn btn--ghost btn--sm">Switch Player</button>
+      </header>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-best">—</div>
+          <div class="stat-label">Best Score</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-games">0</div>
+          <div class="stat-label">Games Played</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-perfect">0</div>
+          <div class="stat-label">Perfect Games</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3 class="section-title">Recent Rounds</h3>
+        <ul id="history-list" class="history-list">
+          <li class="history-empty">No rounds yet — let's play!</li>
+        </ul>
+      </div>
+
+      <button id="btn-start" class="btn btn--primary btn--full btn--lg">Start Round ▶</button>
+      <button id="btn-leaderboard" class="btn btn--secondary btn--full">Leaderboard 🏆</button>
+      <button id="btn-player-stats" class="btn btn--secondary btn--full" hidden>View Player Stats 📋</button>
+    </div>
+  </div>
+
+  <!-- ===== QUIZ SCREEN ===== -->
+  <div id="screen-quiz" class="screen">
+    <div class="screen-inner">
+      <div class="quiz-header">
+        <div class="progress-wrap">
+          <div class="progress-bar">
+            <div id="progress-fill" class="progress-fill"></div>
+          </div>
+          <span id="progress-label" class="progress-label">1 / 10</span>
+        </div>
+        <div id="score-badge" class="score-badge">Score: <span id="score-val">0</span></div>
+      </div>
+
+      <div class="position-badge-wrap">
+        <span class="position-label">Your position:</span>
+        <span id="position-badge" class="position-badge"></span>
+      </div>
+
+      <div class="card scenario-card">
+        <p id="scenario-text" class="scenario-text"></p>
+      </div>
+
+      <div id="answers-container" class="answers-container"></div>
+
+      <div id="feedback-box" class="feedback-box" hidden>
+        <div id="feedback-icon" class="feedback-icon"></div>
+        <div id="feedback-text" class="feedback-text"></div>
+        <button id="btn-next" class="btn btn--primary btn--full">Next Question →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RESULTS SCREEN ===== -->
+  <div id="screen-results" class="screen">
+    <div class="screen-inner">
+      <div class="results-hero">
+        <div id="results-trophy" class="results-trophy"></div>
+        <h2 id="results-score-text" class="results-score-text"></h2>
+        <p id="results-encourage" class="results-encourage"></p>
+      </div>
+
+      <div class="score-display">
+        <span id="results-score" class="score-big"></span>
+        <span class="score-out-of">/ 10</span>
+      </div>
+
+      <div class="results-actions">
+        <button id="btn-play-again" class="btn btn--primary btn--full btn--lg">Play Again ⚾</button>
+        <button id="btn-home" class="btn btn--secondary btn--full">Back to Home</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== LEADERBOARD SCREEN ===== -->
+  <div id="screen-leaderboard" class="screen">
+    <div class="screen-inner">
+      <header class="home-header">
+        <h2 class="home-title">🏆 Leaderboard</h2>
+        <button id="btn-leaderboard-back" class="btn btn--ghost btn--sm">Back</button>
+      </header>
+
+      <div class="card">
+        <table class="data-table" id="leaderboard-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Name</th>
+              <th>Best Score</th>
+              <th>Games</th>
+              <th>Perfect</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PLAYER STATS SCREEN ===== -->
+  <div id="screen-stats" class="screen">
+    <div class="screen-inner">
+      <header class="home-header">
+        <h2 class="home-title">📋 Player Stats</h2>
+        <button id="btn-stats-back" class="btn btn--ghost btn--sm">Back</button>
+      </header>
+
+      <div class="card">
+        <table class="data-table" id="stats-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Best Score</th>
+              <th>Games</th>
+              <th>Perfect</th>
+              <th>Last Played</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="stats-body"></tbody>
+        </table>
+      </div>
+
+      <div class="card" id="merge-card">
+        <h3 class="merge-title">Merge Players</h3>
+        <p class="merge-hint">Combine two records — pick which name to keep.</p>
+        <div class="merge-controls">
+          <div class="merge-field">
+            <label>Keep this name:</label>
+            <select id="merge-keep" class="input"></select>
+          </div>
+          <div class="merge-field">
+            <label>Absorb (delete):</label>
+            <select id="merge-drop" class="input"></select>
+          </div>
+          <button id="btn-merge" class="btn btn--primary">Merge</button>
+        </div>
+        <p id="merge-status" class="merge-status" hidden></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global copyright footer -->
+  <footer class="photo-credit">
+    Ballpark photos &copy; <a href="https://www.ballparksofbaseball.com" target="_blank">Ballparks of Baseball</a>
+  </footer>
+
+  <script src="js/answers.js"></script>
+  <script src="js/questions.js"></script>
+  <script src="js/seed.js"></script><!-- DEV ONLY — remove when done testing -->
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" width="640" height="160">
+  <defs>
+    <linearGradient id="navyLetterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#5580ff"/>
+      <stop offset="55%" stop-color="#1a3faa"/>
+      <stop offset="100%" stop-color="#0a1e66"/>
+    </linearGradient>
+    <linearGradient id="blastGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff3333"/>
+      <stop offset="50%" stop-color="#bb0000"/>
+      <stop offset="100%" stop-color="#750000"/>
+    </linearGradient>
+    <linearGradient id="dividerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="subtleGlow">
+      <feGaussianBlur stdDeviation="3.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="blastGlow">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="dropShadow">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Top accent line -->
+  <rect x="40" y="12" width="720" height="3" rx="1.5" fill="#ffffff" opacity="0.5"/>
+  <!-- Bottom accent line -->
+  <rect x="40" y="185" width="720" height="3" rx="1.5" fill="#ffffff" opacity="0.5"/>
+
+  <!-- Vertical white divider -->
+  <rect x="394" y="28" width="3" height="144" rx="1.5" fill="url(#dividerGrad)"/>
+
+  <!-- B1 -->
+  <g filter="url(#dropShadow)">
+    <text x="68" y="148" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="110" font-weight="900" fill="none" stroke="#000000" stroke-width="8" stroke-linejoin="round" text-anchor="middle" opacity="0.4">B</text>
+    <text x="68" y="148" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="110" font-weight="900" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linejoin="round" text-anchor="middle">B</text>
+    <text x="68" y="148" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="110" font-weight="900" fill="url(#navyLetterGrad)" text-anchor="middle">B</text>
+  </g>
+  <text x="118" y="152" font-family="'Arial Black', sans-serif" font-size="72" font-weight="900" fill="#ffffff" text-anchor="middle" opacity="0.9">,</text>
+
+  <!-- B2 -->
+  <g filter="url(#dropShadow)">
+    <text x="188" y="148" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="110" font-weight="900" fill="none" stroke="#000000" stroke-width="8" stroke-linejoin="round" text-anchor="middle" opacity="0.4">B</text>
+    <text x="188" y="148" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="110" font-weight="900" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linejoin="round" text-anchor="middle">B</text>
+    <text x="188" y="148" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="110" font-weight="900" fill="url(#navyLetterGrad)" text-anchor="middle">B</text>
+  </g>
+  <text x="238" y="152" font-family="'Arial Black', sans-serif" font-size="72" font-weight="900" fill="#ffffff" text-anchor="middle" opacity="0.9">,</text>
+
+  <!-- B3 -->
+  <g filter="url(#dropShadow)">
+    <text x="308" y="148" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="110" font-weight="900" fill="none" stroke="#000000" stroke-width="8" stroke-linejoin="round" text-anchor="middle" opacity="0.4">B</text>
+    <text x="308" y="148" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="110" font-weight="900" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linejoin="round" text-anchor="middle">B</text>
+    <text x="308" y="148" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="110" font-weight="900" fill="url(#navyLetterGrad)" text-anchor="middle">B</text>
+  </g>
+  <text x="358" y="152" font-family="'Arial Black', sans-serif" font-size="72" font-weight="900" fill="#ffffff" text-anchor="middle" opacity="0.9">,</text>
+
+  <!-- Blast! -->
+  <g filter="url(#blastGlow)">
+    <text x="596" y="152" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="118" font-weight="900" font-style="italic" fill="none" stroke="#000000" stroke-width="10" stroke-linejoin="round" text-anchor="middle" opacity="0.4">Blast!</text>
+    <text x="596" y="152" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="118" font-weight="900" font-style="italic" fill="none" stroke="#ffffff" stroke-width="4.5" stroke-linejoin="round" text-anchor="middle">Blast!</text>
+    <text x="596" y="152" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="118" font-weight="900" font-style="italic" fill="url(#blastGrad)" text-anchor="middle">Blast!</text>
+  </g>
+
+</svg>
