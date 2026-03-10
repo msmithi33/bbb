@@ -152,6 +152,15 @@ app.delete('/api/players/:key', async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+app.get('/api/debug', (_req, res) => {
+  const fs = require('fs');
+  res.json({
+    dirname: __dirname,
+    dirContents: fs.readdirSync(__dirname),
+    hasIndex: fs.existsSync(require('path').join(__dirname, 'index.html')),
+  });
+});
+
 // Serve static files.
 // In production (Vercel): vercel-build copies index.html/css/js/assets/img into api/,
 // so __dirname (/var/task/api) contains everything.
