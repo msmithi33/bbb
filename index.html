@@ -89,28 +89,40 @@
   <!-- ===== QUIZ SCREEN ===== -->
   <div id="screen-quiz" class="screen">
     <div class="screen-inner">
-      <div class="quiz-header">
-        <div class="progress-wrap">
-          <div class="progress-bar">
-            <div id="progress-fill" class="progress-fill"></div>
-          </div>
-          <span id="progress-label" class="progress-label">1 / 10</span>
-        </div>
-        <div id="score-badge" class="score-badge">Score: <span id="score-val">0</span></div>
-      </div>
-
-      <div class="position-badge-wrap">
-        <span class="position-label">Your position:</span>
-        <span id="position-badge" class="position-badge"></span>
-      </div>
-
       <div class="card scenario-card">
-        <p id="scenario-text" class="scenario-text"></p>
+        <div class="scenario-row">
+          <span class="scenario-label">Your position</span>
+          <span id="position-badge" class="scenario-value position-badge"></span>
+        </div>
+        <hr class="scenario-divider">
+        <div class="scenario-row">
+          <span class="scenario-label">The Runners</span>
+          <span id="runners-text" class="scenario-value"></span>
+        </div>
+        <hr class="scenario-divider">
+        <div class="scenario-row">
+          <span class="scenario-label">The Ball</span>
+          <span id="ball-text" class="scenario-value"></span>
+        </div>
       </div>
 
       <div id="answers-container" class="answers-container"></div>
+    </div>
 
-      <div id="feedback-box" class="feedback-box" hidden>
+    <!-- Quiz footer: progress + score -->
+    <div class="quiz-footer">
+      <div class="progress-wrap">
+        <div class="progress-bar">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+        <span id="progress-label" class="progress-label">1 / 10</span>
+      </div>
+      <div id="score-badge" class="score-badge">Score: <span id="score-val">0</span></div>
+    </div>
+
+    <!-- Feedback modal -->
+    <div id="feedback-box" class="feedback-box" hidden>
+      <div class="feedback-card">
         <div id="feedback-icon" class="feedback-icon"></div>
         <div id="feedback-text" class="feedback-text"></div>
         <button id="btn-next" class="btn btn--primary btn--full">Next Question →</button>

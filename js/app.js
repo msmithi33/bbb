@@ -486,7 +486,8 @@ function renderQuestion() {
   document.getElementById('position-badge').textContent = q.position;
 
   // Scenario
-  document.getElementById('scenario-text').textContent = q.scenario;
+  document.getElementById('runners-text').textContent = q.runners;
+  document.getElementById('ball-text').textContent = q.ball;
 
   // Score badge
   document.getElementById('score-val').textContent = state.score;
