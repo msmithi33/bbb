@@ -613,6 +613,173 @@ body {
 
 .photo-credit a:hover { color: var(--white); }
 
+/* ===== COACHES CORNER ===== */
+.coaches-tabs {
+  display: flex;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.20);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+}
+
+.coaches-tab-btn {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.75);
+  border: none;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.coaches-tab-btn--active {
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--gray-900);
+}
+
+/* ── Accordion ── */
+.accordion-section {
+  margin-bottom: 8px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.accordion-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 16px;
+  background: rgba(255, 255, 255, 0.92);
+  border: none;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--gray-900);
+  cursor: pointer;
+  text-align: left;
+  gap: 8px;
+}
+
+.accordion-header:hover { background: rgba(255, 255, 255, 1); }
+
+.accordion-chevron {
+  font-size: 0.7rem;
+  color: var(--gray-500);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.accordion-header[aria-expanded="false"] .accordion-chevron {
+  transform: rotate(-90deg);
+}
+
+.accordion-body { background: rgba(255, 255, 255, 0.88); }
+
+/* ── Question cards (inside accordion) ── */
+.question-card {
+  padding: 14px 16px;
+  border-top: 1px solid var(--gray-300);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.question-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.question-id {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--gray-500);
+  min-width: 34px;
+}
+
+.question-field {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.question-field-label {
+  font-weight: 700;
+  color: var(--gray-500);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  min-width: 72px;
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+
+.question-field-value { color: var(--gray-900); }
+
+.question-answer { color: var(--green-field); font-weight: 600; }
+
+.question-explanation { color: var(--gray-700); font-style: italic; }
+
+/* ── Special Rules list ── */
+.rules-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.rules-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--gray-300);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--gray-900);
+}
+
+.rules-item:last-child { border-bottom: none; }
+
+.rules-num {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--white);
+  background: var(--sky-blue);
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── Answer table (inside accordion) ── */
+.answers-pos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.pos-badge {
+  display: inline-block;
+  background: var(--gray-100);
+  border: 1px solid var(--gray-300);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--gray-700);
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 400px) {
   html { font-size: 16px; }

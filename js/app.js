@@ -154,7 +154,7 @@ function refreshCurrentScreenIfNeeded() {
   const id = active.id;
   if (id === 'screen-home') showHomeScreen();
   else if (id === 'screen-leaderboard') showLeaderboard();
-  else if (id === 'screen-stats' && isAdmin(state.currentPlayer)) showPlayerStats();
+  else if (id === 'screen-coaches' && isAdmin(state.currentPlayer)) renderCoachesStatsTab();
 }
 
 // ===== STORAGE LAYER (session only) =====
@@ -229,8 +229,8 @@ function buildAnswerOptions(question) {
     usedIds[pick.id] = true;
   });
 
-  // Fill remaining slots from any category
-  const remaining = pool.filter(function(a) { return !usedIds[a.id]; });
+  // Fill remaining slots — exclude jokes so at most one joke appears
+  const remaining = pool.filter(function(a) { return !usedIds[a.id] && a.cat !== 'joke'; });
   shuffle(remaining);
   while (wrongs.length < WRONG_CHOICES && remaining.length) {
     wrongs.push(remaining.shift());
@@ -320,7 +320,7 @@ function showHomeScreen() {
   const statsBtn = document.getElementById('btn-player-stats');
   if (isAdmin(state.currentPlayer)) {
     statsBtn.hidden = false;
-    statsBtn.onclick = showPlayerStats;
+    statsBtn.onclick = showCoachesCorner;
   } else {
     statsBtn.hidden = true;
   }
@@ -377,11 +377,40 @@ function showLeaderboard() {
   document.getElementById('btn-leaderboard-back').onclick = showHomeScreen;
 }
 
-// ===== PLAYER STATS SCREEN (admin only) =====
-function showPlayerStats() {
+// ===== COACHES CORNER SCREEN (admin only) =====
+function showCoachesCorner() {
   if (!isAdmin(state.currentPlayer)) return;
-  showScreen('screen-stats');
+  showScreen('screen-coaches');
+  switchCoachesTab('stats');
+  renderCoachesStatsTab();
+  document.querySelectorAll('.coaches-tab-btn').forEach(function(btn) {
+    btn.onclick = function() { switchCoachesTab(btn.dataset.tab); };
+  });
+  document.getElementById('btn-coaches-back').onclick = showHomeScreen;
+}
 
+function switchCoachesTab(tabName) {
+  document.querySelectorAll('.coaches-tab-btn').forEach(function(btn) {
+    btn.classList.toggle('coaches-tab-btn--active', btn.dataset.tab === tabName);
+  });
+  document.querySelectorAll('.coaches-tab-panel').forEach(function(panel) {
+    panel.hidden = (panel.id !== 'coaches-tab-' + tabName);
+  });
+  if (tabName === 'questions') {
+    var panel = document.getElementById('coaches-tab-questions');
+    if (!panel.children.length) renderQuestionsTab();
+  }
+  if (tabName === 'answers') {
+    var panel = document.getElementById('coaches-tab-answers');
+    if (!panel.children.length) renderAnswersTab();
+  }
+  if (tabName === 'rules') {
+    var panel = document.getElementById('coaches-tab-rules');
+    if (!panel.children.length) renderRulesTab();
+  }
+}
+
+function renderCoachesStatsTab() {
   const rows = Object.entries(state.players)
     .filter(function(entry) { return !isAdmin(entry[1].displayName || ''); });
 
@@ -410,13 +439,118 @@ function showPlayerStats() {
       const name = btn.closest('tr').querySelector('td').textContent;
       if (confirm('Remove ' + name + '? This cannot be undone.')) {
         await apiDeletePlayer(key);
-        // WS push will refresh the screen automatically
       }
     });
   }
 
   populateMergeSelects(state.players);
-  document.getElementById('btn-stats-back').onclick = showHomeScreen;
+}
+
+function renderQuestionsTab() {
+  var panel = document.getElementById('coaches-tab-questions');
+  var groups = {};
+  var order = [];
+  window.QUESTIONS.forEach(function(q) {
+    if (!groups[q.position]) { groups[q.position] = []; order.push(q.position); }
+    groups[q.position].push(q);
+  });
+  var html = order.map(function(pos, i) {
+    var qs = groups[pos];
+    var expanded = (i === 0);
+    var cardsHtml = qs.map(function(q) {
+      var answer = window.ANSWERS.find(function(a) { return a.id === q.correct; });
+      var answerText = answer ? escapeHtml(answer.text) : escapeHtml(q.correct);
+      return '<div class="question-card">' +
+        '<div class="question-card-header">' +
+          '<span class="question-id">' + escapeHtml(q.id) + '</span>' +
+          '<span class="type-badge type-badge--' + escapeAttr(q.type) + '">' + escapeHtml(q.type) + '</span>' +
+        '</div>' +
+        '<div class="question-field"><span class="question-field-label">Runners</span><span class="question-field-value">' + escapeHtml(q.runners) + '</span></div>' +
+        '<div class="question-field"><span class="question-field-label">Ball</span><span class="question-field-value">' + escapeHtml(q.ball) + '</span></div>' +
+        '<div class="question-field"><span class="question-field-label">Answer</span><span class="question-field-value question-answer">' + answerText + '</span></div>' +
+        '<div class="question-field"><span class="question-field-label">Why</span><span class="question-field-value question-explanation">' + escapeHtml(q.explanation) + '</span></div>' +
+      '</div>';
+    }).join('');
+    return '<div class="accordion-section">' +
+      '<button class="accordion-header" aria-expanded="' + expanded + '">' +
+        '<span>' + escapeHtml(pos) + ' (' + qs.length + ')</span>' +
+        '<span class="accordion-chevron">▼</span>' +
+      '</button>' +
+      '<div class="accordion-body"' + (expanded ? '' : ' hidden') + '>' + cardsHtml + '</div>' +
+    '</div>';
+  }).join('');
+  panel.innerHTML = html;
+  panel.querySelectorAll('.accordion-header').forEach(function(hdr) {
+    hdr.addEventListener('click', toggleAccordion);
+  });
+}
+
+function renderAnswersTab() {
+  var panel = document.getElementById('coaches-tab-answers');
+  var cats = ['ball', 'base', 'backup', 'joke'];
+  var groups = {};
+  cats.forEach(function(c) { groups[c] = []; });
+  window.ANSWERS.forEach(function(a) {
+    if (groups[a.cat]) groups[a.cat].push(a);
+  });
+  var html = cats.map(function(cat, i) {
+    var answers = groups[cat];
+    var expanded = (i === 0);
+    var rowsHtml = answers.map(function(a) {
+      var posHtml = (a.pos === 'all')
+        ? '<span class="pos-badge">All</span>'
+        : a.pos.map(function(p) { return '<span class="pos-badge">' + escapeHtml(p) + '</span>'; }).join('');
+      return '<tr>' +
+        '<td style="font-size:0.75rem;color:var(--gray-500);white-space:nowrap">' + escapeHtml(a.id) + '</td>' +
+        '<td>' + escapeHtml(a.text) + '</td>' +
+        '<td><div class="answers-pos">' + posHtml + '</div></td>' +
+      '</tr>';
+    }).join('');
+    var label = cat.charAt(0).toUpperCase() + cat.slice(1);
+    return '<div class="accordion-section">' +
+      '<button class="accordion-header" aria-expanded="' + expanded + '">' +
+        '<span>' + escapeHtml(label) + ' (' + answers.length + ')</span>' +
+        '<span class="accordion-chevron">▼</span>' +
+      '</button>' +
+      '<div class="accordion-body"' + (expanded ? '' : ' hidden') + '>' +
+        '<table class="data-table">' +
+          '<thead><tr><th>ID</th><th>Text</th><th>Positions</th></tr></thead>' +
+          '<tbody>' + rowsHtml + '</tbody>' +
+        '</table>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+  panel.innerHTML = html;
+  panel.querySelectorAll('.accordion-header').forEach(function(hdr) {
+    hdr.addEventListener('click', toggleAccordion);
+  });
+}
+
+async function renderRulesTab() {
+  var panel = document.getElementById('coaches-tab-rules');
+  panel.innerHTML = '<div class="card"><p style="color:var(--gray-500);font-size:0.9rem">Loading...</p></div>';
+  try {
+    var res = await fetch('/assets/rules.txt');
+    var text = await res.text();
+    var rules = text.split('\n')
+      .map(function(line) { return line.replace(/^-\s*/, '').trim(); })
+      .filter(function(line) { return line.length > 0; });
+    var listHtml = rules.map(function(rule, i) {
+      return '<li class="rules-item"><span class="rules-num">' + (i + 1) + '</span>' +
+             '<span>' + escapeHtml(rule) + '</span></li>';
+    }).join('');
+    panel.innerHTML = '<div class="card"><ol class="rules-list">' + listHtml + '</ol></div>';
+  } catch (e) {
+    panel.innerHTML = '<div class="card"><p style="color:var(--red-wrong)">Could not load rules.txt</p></div>';
+  }
+}
+
+function toggleAccordion(e) {
+  var hdr = e.currentTarget;
+  var body = hdr.nextElementSibling;
+  var open = hdr.getAttribute('aria-expanded') === 'true';
+  hdr.setAttribute('aria-expanded', open ? 'false' : 'true');
+  body.hidden = open;
 }
 
 function populateMergeSelects(players) {
