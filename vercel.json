@@ -1,5 +1,9 @@
 {
-  "outputDirectory": ".",
+  "functions": {
+    "api/handler.js": {
+      "includeFiles": "index.html,css/**,js/**,assets/**,img/**"
+    }
+  },
   "rewrites": [
     { "source": "/(.*)", "destination": "/api/handler" }
   ]
