@@ -152,8 +152,21 @@ app.delete('/api/players/:key', async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+// Diagnostic — remove after debugging
+app.get('/api/debug', (_req, res) => {
+  const fs = require('fs');
+  const up = path.join(__dirname, '..');
+  res.json({
+    dirname: __dirname,
+    cwd: process.cwd(),
+    upExists:  fs.existsSync(up),
+    upContents: fs.existsSync(up)  ? fs.readdirSync(up)       : [],
+    cwdContents: fs.readdirSync(process.cwd()),
+    dirContents: fs.readdirSync(__dirname),
+  });
+});
+
 // Serve static files — project root is one level up from api/
-// Vercel CDN handles this in production; this covers local dev and any routing edge cases.
 app.use(express.static(path.join(__dirname, '..')));
 
 module.exports = app;
