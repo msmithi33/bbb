@@ -25,7 +25,7 @@ window.ANSWERS = [
   { id: 'ball-step-1b-self', text: 'Field the ball and step on first base yourself',           cat: 'ball',   pos: ['1B'] },
   { id: 'ball-dp',           text: 'Field the ball, step on the bag, then throw to first',     cat: 'ball',   pos: ['2B','SS'] },
   { id: 'ball-off-bag',      text: 'Step off the bag to catch the throw, then tag the runner', cat: 'ball',  pos: ['1B','2B','SS','3B'] },
-  { id: 'ball-hold-return',  text: 'Hold the runner, then return the ball to the pitcher',     cat: 'ball',  pos: ['1B'] },
+  { id: 'ball-hold-return',  text: 'Hold the runner, then return the ball to the pitcher',     cat: 'ball',  pos: ['1B','3B'] },
 
   // ===== BASE — positional coverage =====
   { id: 'base-cover-1b',    text: 'Cover first base',                                         cat: 'base',   pos: ['1B','2B'] },
@@ -62,5 +62,6 @@ window.ANSWERS = [
   { id: 'joke-highfive',    text: 'High five the first base coach',                           cat: 'joke',   pos: 'all' },
   { id: 'joke-sky',         text: 'Stare at the clouds',                                      cat: 'joke',   pos: 'all' },
   { id: 'joke-pretend',     text: 'Pretend you didn\'t see it',                               cat: 'joke',   pos: 'all' },
+  { id: 'joke-mountaindew', text: 'Get coach a Mountain Dew',                                  cat: 'joke',   pos: 'all' },
 
 ];

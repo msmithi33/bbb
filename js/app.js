@@ -58,6 +58,7 @@ const BALLPARK_INFO = {
 };
 
 let lastBgIndex = -1;
+let _popstateNav = false;
 
 // ===== STATE =====
 const state = {
@@ -133,30 +134,6 @@ async function apiMergePlayers(keepKey, dropKey) {
   });
 }
 
-// ===== POLLING CLIENT =====
-// Vercel serverless functions don't support persistent WebSocket connections,
-// so we poll the REST API every 5 seconds to keep state.players in sync.
-function startPolling() {
-  setInterval(async function() {
-    try {
-      const players = await fetchPlayers();
-      state.players = players;
-      refreshCurrentScreenIfNeeded();
-    } catch (e) {
-      // silent — don't disrupt the game on transient network errors
-    }
-  }, 5000);
-}
-
-function refreshCurrentScreenIfNeeded() {
-  const active = document.querySelector('.screen--active');
-  if (!active) return;
-  const id = active.id;
-  if (id === 'screen-home') renderHomeScreenData();
-  else if (id === 'screen-leaderboard') renderLeaderboardData();
-  else if (id === 'screen-coaches' && isAdmin(state.currentPlayer)) renderCoachesStatsTab();
-}
-
 // ===== STORAGE LAYER (session only) =====
 function loadCurrentPlayer() {
   try {
@@ -187,6 +164,17 @@ function showScreen(id) {
   const target = document.getElementById(id);
   if (target) target.classList.add('screen--active');
   window.scrollTo(0, 0);
+  if (!_popstateNav) history.pushState({ screen: id }, '');
+}
+
+function restoreScreen(id) {
+  if (id === 'screen-login') { showScreen(id); initLoginScreen(); }
+  else if (id === 'screen-home') showHomeScreen();
+  else if (id === 'screen-leaderboard') showLeaderboard();
+  else if (id === 'screen-coaches' && isAdmin(state.currentPlayer)) showCoachesCorner();
+  else if (id === 'screen-quiz' && state.questions.length) { showScreen(id); renderQuestion(); }
+  else if (id === 'screen-results') { showScreen(id); showResults(); }
+  else showHomeScreen(); // safe fallback
 }
 
 // ===== UTILITIES =====
@@ -782,8 +770,6 @@ function escapeAttr(str) {
 
 // ===== BOOTSTRAP =====
 async function init() {
-  startPolling();
-
   try {
     state.players = await fetchPlayers();
   } catch (e) {
@@ -810,7 +796,20 @@ function syncHeaderHeight() {
 }
 
 window.addEventListener('resize', syncHeaderHeight);
+
+window.addEventListener('popstate', function(e) {
+  var id = e.state && e.state.screen;
+  if (!id) return; // pre-app history entry — let browser navigate away normally
+  _popstateNav = true;
+  restoreScreen(id);
+  _popstateNav = false;
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   // Wait one frame for the SVG image to size itself before measuring
-  requestAnimationFrame(() => { syncHeaderHeight(); init(); });
+  requestAnimationFrame(() => {
+    syncHeaderHeight();
+    history.replaceState({ screen: 'screen-login' }, ''); // seed initial state
+    init();
+  });
 });

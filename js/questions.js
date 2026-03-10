@@ -294,9 +294,9 @@ window.QUESTIONS = [
     position: "Shortstop (SS)",
     type: "ball",
     runners: "Runner on first",
-    ball: "A ground ball is hit to the 3rd base side — throw comes to you at second.",
+    ball: "A ground ball is hit to the third base side of the infield.",
     correct: "base-cover-3b",
-    explanation: "The second baseman is covering second base, you cover third in case the runner advances past second.  Middle infielders always run towards the ball!"
+    explanation: "The second baseman covers second base. You moved toward the ball (3B side), so you're in position to cover third in case the runner advances past second. Middle infielders always run towards the ball!"
   },
   {
     id: "Q33",
@@ -477,10 +477,10 @@ window.QUESTIONS = [
     id: "Q52",
     position: "Left Field (LF)",
     type: "base",
-    runners: "Runner on first — heading to second",
+    runners: "Runner on first — rounding second, heading to third",
     ball: "A single is hit to you in shallow left field.",
     correct: "ball-throw-3b",
-    explanation: "With a runner on first rounding second, hit third base quickly to hold the runner and prevent them from advancing to third."
+    explanation: "The runner is rounding second aggressively — hit third base quickly to hold them and prevent a score."
   },
   {
     id: "Q53",
