@@ -120,7 +120,7 @@ window.QUESTIONS = [
     type: "base",
     runners: "Runner on first",
     ball: "A ground ball is hit to second base.",
-    correct: "base-hold-1b",
+    correct: "base-cover-1b",
     explanation: "On a possible double play, stay anchored to first to receive the relay throw from second."
   },
   {
@@ -129,7 +129,7 @@ window.QUESTIONS = [
     type: "backup",
     runners: "Runner on first — attempting to steal second",
     ball: "Catcher fires a throw to second.",
-    correct: "base-hold-1b",
+    correct: "base-cover-1b",
     explanation: "On a steal attempt, your job is to hold first base. If the throw is errant and the runner retreats, you need to be there. Don't leave the bag unguarded."
   },
   {
@@ -156,7 +156,7 @@ window.QUESTIONS = [
     type: "base",
     runners: "Runner on first, no outs",
     ball: "The batter hits a weak ground ball toward third.",
-    correct: "base-hold-1b",
+    correct: "base-cover-1b",
     explanation: "Stay at first to receive a possible throw for the force out. Don't leave your bag unguarded."
   },
   {

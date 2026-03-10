@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BBB — Ball, Base, Back Up, Blast!</title>
+  <link rel="icon" href="favicon.ico">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -80,6 +81,11 @@
         </ul>
       </div>
 
+      <div id="resume-banner" hidden>
+        <p id="resume-text"></p>
+        <button id="btn-resume" class="btn btn--primary btn--full">Resume Round ▶</button>
+      </div>
+
       <button id="btn-start" class="btn btn--primary btn--full btn--lg">Start Round ▶</button>
       <button id="btn-leaderboard" class="btn btn--secondary btn--full">Leaderboard 🏆</button>
       <button id="btn-player-stats" class="btn btn--secondary btn--full" hidden>Coaches Corner 🏟️</button>
@@ -91,19 +97,20 @@
     <div class="screen-inner">
       <div class="card scenario-card">
         <div class="scenario-row">
-          <span class="scenario-label">Your position</span>
+          <span class="scenario-label">🧤 Your position</span>
           <span id="position-badge" class="scenario-value position-badge"></span>
         </div>
         <hr class="scenario-divider">
         <div class="scenario-row">
-          <span class="scenario-label">The Runners</span>
+          <span class="scenario-label">🏃 The Runners</span>
           <span id="runners-text" class="scenario-value"></span>
         </div>
         <hr class="scenario-divider">
         <div class="scenario-row">
-          <span class="scenario-label">The Ball</span>
+          <span class="scenario-label">⚾ The Ball</span>
           <span id="ball-text" class="scenario-value"></span>
         </div>
+        <div class="scenario-header">What do you do?</div>
       </div>
 
       <div id="answers-container" class="answers-container"></div>
@@ -190,6 +197,7 @@
         <button class="coaches-tab-btn" data-tab="questions">Questions</button>
         <button class="coaches-tab-btn" data-tab="answers">Answers</button>
         <button class="coaches-tab-btn" data-tab="rules">Special Rules</button>
+        <button class="coaches-tab-btn" data-tab="question-stats">Question Stats</button>
       </div>
 
       <!-- ── Tab: Player Stats ── -->
@@ -237,6 +245,11 @@
       <!-- ── Tab: Special Rules ── -->
       <div id="coaches-tab-rules" class="coaches-tab-panel" hidden>
         <!-- Populated by renderRulesTab() via fetch('/assets/rules.txt') -->
+      </div>
+
+      <!-- ── Tab: Question Stats ── -->
+      <div id="coaches-tab-question-stats" class="coaches-tab-panel" hidden>
+        <!-- Populated by renderQuestionStatsTab() -->
       </div>
 
     </div>

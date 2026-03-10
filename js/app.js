@@ -3,6 +3,7 @@
 
 // ===== CONSTANTS =====
 const STORAGE_CURRENT = 'bbb_currentPlayer';
+const STORAGE_ROUND = 'bbb_round';
 const ROUND_SIZE = 10;
 const MAX_HISTORY = 5;
 const WRONG_CHOICES = 4; // wrong answers shown per question
@@ -134,6 +135,14 @@ async function apiMergePlayers(keepKey, dropKey) {
   });
 }
 
+async function apiRecordAnswer(questionId, isCorrect) {
+  await fetch('/api/questions/' + encodeURIComponent(questionId) + '/answer', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ correct: isCorrect })
+  });
+}
+
 // ===== STORAGE LAYER (session only) =====
 function loadCurrentPlayer() {
   try {
@@ -153,6 +162,27 @@ function saveCurrentPlayer(name) {
   } catch (e) {
     // silent fail
   }
+}
+
+function saveRoundState() {
+  const key = STORAGE_ROUND + '_' + state.currentPlayer;
+  const payload = {
+    questionIds: state.questions.map(function(q) { return q.id; }),
+    currentIndex: state.currentIndex,
+    score: state.score
+  };
+  try { localStorage.setItem(key, JSON.stringify(payload)); } catch(e) {}
+}
+
+function loadRoundState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_ROUND + '_' + state.currentPlayer);
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) { return null; }
+}
+
+function clearRoundState() {
+  try { localStorage.removeItem(STORAGE_ROUND + '_' + state.currentPlayer); } catch(e) {}
 }
 
 // ===== NAVIGATION =====
@@ -208,17 +238,19 @@ function buildAnswerOptions(question) {
   const cats = ['ball', 'base', 'backup', 'joke'];
   const wrongs = [];
   const usedIds = {};
+  const usedTexts = { [correct.text]: true };
   cats.forEach(function(cat) {
     if (cat === correct.cat) return;
-    const opts = pool.filter(function(a) { return a.cat === cat && !usedIds[a.id]; });
+    const opts = pool.filter(function(a) { return a.cat === cat && !usedIds[a.id] && !usedTexts[a.text]; });
     if (!opts.length) return;
     const pick = opts[Math.floor(Math.random() * opts.length)];
     wrongs.push(pick);
     usedIds[pick.id] = true;
+    usedTexts[pick.text] = true;
   });
 
   // Fill remaining slots — exclude jokes so at most one joke appears
-  const remaining = pool.filter(function(a) { return !usedIds[a.id] && a.cat !== 'joke'; });
+  const remaining = pool.filter(function(a) { return !usedIds[a.id] && !usedTexts[a.text] && a.cat !== 'joke'; });
   shuffle(remaining);
   while (wrongs.length < WRONG_CHOICES && remaining.length) {
     wrongs.push(remaining.shift());
@@ -293,7 +325,45 @@ function showHomeScreen() {
   document.getElementById('btn-start').onclick = startRound;
   document.getElementById('btn-logout').onclick = handleLogout;
   document.getElementById('btn-leaderboard').onclick = showLeaderboard;
+
+  const saved = loadRoundState();
+  const resumeBanner = document.getElementById('resume-banner');
+  const resumeText = document.getElementById('resume-text');
+  const btnResume = document.getElementById('btn-resume');
+
+  if (saved && window.QUESTIONS) {
+    const questions = saved.questionIds.map(function(id) {
+      return window.QUESTIONS.find(function(q) { return q.id === id; });
+    }).filter(Boolean);
+
+    if (questions.length === saved.questionIds.length) {
+      resumeText.textContent =
+        'Round in progress — Question ' + (saved.currentIndex + 1) +
+        ' of ' + questions.length + ', Score: ' + saved.score;
+      btnResume.onclick = function() { resumeRound(saved, questions); };
+      resumeBanner.hidden = false;
+    } else {
+      clearRoundState();
+      resumeBanner.hidden = true;
+    }
+  } else {
+    resumeBanner.hidden = true;
+  }
+
   renderHomeScreenData();
+}
+
+function resumeRound(saved, questions) {
+  if (!window.ANSWERS) {
+    alert('Heads up! The question bank didn\'t load — please refresh the page.');
+    return;
+  }
+  state.questions = questions;
+  state.currentIndex = saved.currentIndex;
+  state.score = saved.score;
+  state.answered = false;
+  showScreen('screen-quiz');
+  renderQuestion();
 }
 
 function renderHomeScreenData() {
@@ -334,6 +404,7 @@ function renderHistoryList(history) {
 }
 
 function handleLogout() {
+  clearRoundState();
   state.currentPlayer = null;
   saveCurrentPlayer(null);
   showScreen('screen-login');
@@ -399,6 +470,9 @@ function switchCoachesTab(tabName) {
   if (tabName === 'rules') {
     var panel = document.getElementById('coaches-tab-rules');
     if (!panel.children.length) renderRulesTab();
+  }
+  if (tabName === 'question-stats') {
+    renderQuestionStatsTab();
   }
 }
 
@@ -537,6 +611,50 @@ async function renderRulesTab() {
   }
 }
 
+async function renderQuestionStatsTab() {
+  const panel = document.getElementById('coaches-tab-question-stats');
+  panel.innerHTML = '<div class="card"><p style="color:var(--gray-500);font-size:0.9rem">Loading...</p></div>';
+  try {
+    const res = await fetch('/api/questions/stats');
+    const stats = await res.json();
+
+    const rows = window.QUESTIONS
+      .map(function(q) {
+        const s = stats[q.id] || { timesAsked: 0, timesWrong: 0 };
+        return { q, timesAsked: s.timesAsked, timesWrong: s.timesWrong };
+      })
+      .filter(function(r) { return r.timesAsked > 0; })
+      .sort(function(a, b) {
+        return (b.timesWrong / b.timesAsked) - (a.timesWrong / a.timesAsked);
+      });
+
+    if (!rows.length) {
+      panel.innerHTML = '<div class="card"><p style="color:var(--gray-500);font-size:0.9rem">No data yet — play some rounds first!</p></div>';
+      return;
+    }
+
+    const rowsHtml = rows.map(function(r) {
+      const pct = Math.round((r.timesWrong / r.timesAsked) * 100);
+      return '<tr>' +
+        '<td style="font-size:0.75rem;color:var(--gray-500);white-space:nowrap">' + escapeHtml(r.q.id) + '</td>' +
+        '<td style="font-size:0.8rem">' + escapeHtml(r.q.position) + '</td>' +
+        '<td style="font-size:0.8rem">' + escapeHtml(r.q.ball) + '</td>' +
+        '<td style="text-align:center">' + r.timesAsked + '</td>' +
+        '<td style="text-align:center">' + r.timesWrong + '</td>' +
+        '<td style="text-align:center;font-weight:600' + (pct >= 50 ? ';color:var(--red-wrong)' : '') + '">' + pct + '%</td>' +
+      '</tr>';
+    }).join('');
+
+    panel.innerHTML = '<div class="card" style="overflow-x:auto">' +
+      '<table class="data-table">' +
+        '<thead><tr><th>ID</th><th>Position</th><th>Scenario</th><th>Asked</th><th>Wrong</th><th>% Wrong</th></tr></thead>' +
+        '<tbody>' + rowsHtml + '</tbody>' +
+      '</table></div>';
+  } catch (e) {
+    panel.innerHTML = '<div class="card"><p style="color:var(--red-wrong)">Could not load question stats.</p></div>';
+  }
+}
+
 function toggleAccordion(e) {
   var hdr = e.currentTarget;
   var body = hdr.nextElementSibling;
@@ -592,11 +710,14 @@ function startRound() {
     return;
   }
 
+  clearRoundState();
+
   state.questions = selectQuestions(window.QUESTIONS);
   state.currentIndex = 0;
   state.score = 0;
   state.answered = false;
 
+  saveRoundState();
   showScreen('screen-quiz');
   renderQuestion();
 }
@@ -650,6 +771,7 @@ function onAnswerClick(btn, question) {
 
   const chosen = btn.getAttribute('data-id');
   const isCorrect = chosen === question.correct;
+  apiRecordAnswer(question.id, isCorrect); // fire-and-forget
 
   // Disable all buttons and color them
   const allBtns = document.querySelectorAll('.answer-btn');
@@ -703,6 +825,7 @@ function updateProgress() {
 async function onNext() {
   if (state.currentIndex < state.questions.length - 1) {
     state.currentIndex += 1;
+    saveRoundState();
     renderQuestion();
   } else {
     await finishRound();
@@ -711,6 +834,7 @@ async function onNext() {
 
 // ===== RESULTS SCREEN =====
 async function finishRound() {
+  clearRoundState();
   await apiRecordGame(state.currentPlayer, state.score);
   showResults();
 }

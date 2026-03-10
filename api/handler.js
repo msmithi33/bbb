@@ -26,6 +26,13 @@ async function ensureDb() {
       history      TEXT NOT NULL DEFAULT '[]'
     )
   `);
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS question_stats (
+      question_id  TEXT PRIMARY KEY,
+      times_asked  INTEGER NOT NULL DEFAULT 0,
+      times_wrong  INTEGER NOT NULL DEFAULT 0
+    )
+  `);
   dbReady = true;
 }
 
@@ -52,6 +59,35 @@ app.use(express.json());
 app.use(async (_req, res, next) => {
   try { await ensureDb(); next(); }
   catch (e) { res.status(500).json({ error: 'DB init failed: ' + e.message }); }
+});
+
+// GET /api/questions/stats  — must be before any :id param routes
+app.get('/api/questions/stats', async (_req, res) => {
+  try {
+    const result = await db.execute('SELECT question_id, times_asked, times_wrong FROM question_stats');
+    const out = {};
+    for (const row of result.rows) {
+      out[row.question_id] = { timesAsked: row.times_asked, timesWrong: row.times_wrong };
+    }
+    res.json(out);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// POST /api/questions/:id/answer  { correct: bool }
+app.post('/api/questions/:id/answer', async (req, res) => {
+  const { correct } = req.body;
+  const wrong = correct ? 0 : 1;
+  try {
+    await db.execute({
+      sql: `INSERT INTO question_stats (question_id, times_asked, times_wrong)
+            VALUES (?, 1, ?)
+            ON CONFLICT(question_id) DO UPDATE SET
+              times_asked = times_asked + 1,
+              times_wrong = times_wrong + ?`,
+      args: [req.params.id, wrong, wrong]
+    });
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 // GET /api/players

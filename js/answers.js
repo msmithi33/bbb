@@ -19,7 +19,7 @@ window.ANSWERS = [
   { id: 'ball-step-1b',      text: 'Field the ball and step on first base for the force out',  cat: 'ball',   pos: ['1B','2B'] },
   { id: 'ball-step-2b',      text: 'Field the ball and step on second base for the force out', cat: 'ball',   pos: ['2B','SS'] },
   { id: 'ball-step-3b',      text: 'Field the ball and step on third base for the force out',  cat: 'ball',   pos: ['3B','SS'] },
-  { id: 'ball-catch',        text: 'Catch the ball',                                          cat: 'ball',   pos: 'all' },
+  { id: 'ball-catch',        text: 'Catch the ball and return it to the pitcher',            cat: 'ball',   pos: 'all' },
   { id: 'ball-flip-pitcher', text: 'Field the ball and flip to the pitcher',                   cat: 'ball',   pos: ['1B','2B','SS'] },
   { id: 'ball-cutoff',       text: 'Field the ball and throw to the cut-off man',              cat: 'ball',   pos: ['LF','CF','RF'] },
   { id: 'ball-step-1b-self', text: 'Field the ball and step on first base yourself',           cat: 'ball',   pos: ['1B'] },
@@ -32,11 +32,8 @@ window.ANSWERS = [
   { id: 'base-cover-2b',    text: 'Cover second base',                                        cat: 'base',   pos: ['2B','SS'] },
   { id: 'base-cover-3b',    text: 'Cover third base',                                         cat: 'base',   pos: ['SS','3B'] },
   { id: 'base-cover-home',  text: 'Cover home plate',                                         cat: 'base',   pos: ['P','C'] },
-  { id: 'base-hold-1b',     text: 'Cover first base',                                          cat: 'base',   pos: ['1B'] },
-  { id: 'base-hold-2b',     text: 'Cover second base',                                         cat: 'base',   pos: ['2B','SS'] },
-  { id: 'base-hold-3b',     text: 'Cover third base',                                          cat: 'base',   pos: ['3B'] },
-  { id: 'base-stay-home',   text: 'Cover home plate',                                       cat: 'base',   pos: ['C'] },
   { id: 'base-stay-mound',  text: 'Stay on the mound',                                        cat: 'base',   pos: ['P'] },
+  { id: 'base-stay-home',   text: 'Stay at home plate',                                        cat: 'base',   pos: ['C'] },
   { id: 'base-dp',          text: 'Cover second base, step on the bag, catch the throw, then throw to first',     cat: 'ball',   pos: ['2B','SS'] },
  
   // ===== BACKUP — backing up plays =====
