@@ -1,5 +1,6 @@
 'use strict';
 
+const path    = require('path');
 const express = require('express');
 const { createClient } = require('@libsql/client');
 
@@ -150,5 +151,9 @@ app.delete('/api/players/:key', async (req, res) => {
     res.json({ ok: true });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
+
+// Serve static files — project root is one level up from api/
+// Vercel CDN handles this in production; this covers local dev and any routing edge cases.
+app.use(express.static(path.join(__dirname, '..')));
 
 module.exports = app;
