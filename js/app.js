@@ -9,21 +9,21 @@ const MAX_HISTORY = 5;
 const WRONG_CHOICES = 4; // wrong answers shown per question
 
 const BALLPARK_IMAGES = [
-  'img/ballparks/camden.jpg', 'img/ballparks/fenway.jpg',
-  'img/ballparks/yankee.jpg', 'img/ballparks/rogers.jpg',
-  'img/ballparks/guaranteed.jpg', 'img/ballparks/progressive.jpg',
-  'img/ballparks/comerica.jpg', 'img/ballparks/kauffman.jpg',
-  'img/ballparks/target.jpg', 'img/ballparks/minutemaid.jpg',
-  'img/ballparks/angel.jpg', 'img/ballparks/tmobile.jpg',
-  'img/ballparks/globelife.jpg', 'img/ballparks/tropicana.jpg',
-  'img/ballparks/truist.jpg', 'img/ballparks/wrigley.jpg',
-  'img/ballparks/greatamerican.jpg', 'img/ballparks/coors.jpg',
-  'img/ballparks/americanfamily.jpg', 'img/ballparks/chase.jpg',
-  'img/ballparks/dodger.jpg', 'img/ballparks/petco.jpg',
-  'img/ballparks/oracle.jpg', 'img/ballparks/nationals.jpg',
-  'img/ballparks/citi.jpg', 'img/ballparks/citizensbank.jpg',
-  'img/ballparks/busch.jpg', 'img/ballparks/loandepot.jpg',
-  'img/ballparks/pnc.jpg'
+  'assets/images/ballparks/camden.jpg', 'assets/images/ballparks/fenway.jpg',
+  'assets/images/ballparks/yankee.jpg', 'assets/images/ballparks/rogers.jpg',
+  'assets/images/ballparks/guaranteed.jpg', 'assets/images/ballparks/progressive.jpg',
+  'assets/images/ballparks/comerica.jpg', 'assets/images/ballparks/kauffman.jpg',
+  'assets/images/ballparks/target.jpg', 'assets/images/ballparks/minutemaid.jpg',
+  'assets/images/ballparks/angel.jpg', 'assets/images/ballparks/tmobile.jpg',
+  'assets/images/ballparks/globelife.jpg', 'assets/images/ballparks/tropicana.jpg',
+  'assets/images/ballparks/truist.jpg', 'assets/images/ballparks/wrigley.jpg',
+  'assets/images/ballparks/greatamerican.jpg', 'assets/images/ballparks/coors.jpg',
+  'assets/images/ballparks/americanfamily.jpg', 'assets/images/ballparks/chase.jpg',
+  'assets/images/ballparks/dodger.jpg', 'assets/images/ballparks/petco.jpg',
+  'assets/images/ballparks/oracle.jpg', 'assets/images/ballparks/nationals.jpg',
+  'assets/images/ballparks/citi.jpg', 'assets/images/ballparks/citizensbank.jpg',
+  'assets/images/ballparks/busch.jpg', 'assets/images/ballparks/loandepot.jpg',
+  'assets/images/ballparks/pnc.jpg'
 ];
 
 const BALLPARK_INFO = {
@@ -93,7 +93,7 @@ function rotateBg() {
   lastBgIndex = idx;
   overlay.style.backgroundImage = 'url(' + BALLPARK_IMAGES[idx] + ')';
 
-  const key = BALLPARK_IMAGES[idx].replace('img/ballparks/', '').replace('.jpg', '');
+  const key = BALLPARK_IMAGES[idx].replace('assets/images/ballparks/', '').replace('.jpg', '');
   const info = BALLPARK_INFO[key];
   if (info) {
     document.getElementById('park-label-name').textContent = info.park;
@@ -592,23 +592,13 @@ function renderAnswersTab() {
   });
 }
 
-async function renderRulesTab() {
+function renderRulesTab() {
   var panel = document.getElementById('coaches-tab-rules');
-  panel.innerHTML = '<div class="card"><p style="color:var(--gray-500);font-size:0.9rem">Loading...</p></div>';
-  try {
-    var res = await fetch('/assets/rules.txt');
-    var text = await res.text();
-    var rules = text.split('\n')
-      .map(function(line) { return line.replace(/^-\s*/, '').trim(); })
-      .filter(function(line) { return line.length > 0; });
-    var listHtml = rules.map(function(rule, i) {
-      return '<li class="rules-item"><span class="rules-num">' + (i + 1) + '</span>' +
-             '<span>' + escapeHtml(rule) + '</span></li>';
-    }).join('');
-    panel.innerHTML = '<div class="card"><ol class="rules-list">' + listHtml + '</ol></div>';
-  } catch (e) {
-    panel.innerHTML = '<div class="card"><p style="color:var(--red-wrong)">Could not load rules.txt</p></div>';
-  }
+  var listHtml = window.RULES.map(function(rule, i) {
+    return '<li class="rules-item"><span class="rules-num">' + (i + 1) + '</span>' +
+           '<span>' + escapeHtml(rule) + '</span></li>';
+  }).join('');
+  panel.innerHTML = '<div class="card"><ol class="rules-list">' + listHtml + '</ol></div>';
 }
 
 async function renderQuestionStatsTab() {

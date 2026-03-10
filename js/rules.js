@@ -1,0 +1,14 @@
+window.RULES = [
+  "Catcher's priority is to stay to cover home plate, unless there is a wild pitch or errant throw to home, then they go get the ball.",
+  "Catcher's may back up throws to the pitcher from right field if there are no runners on 2nd or 3rd.",
+  "Middle infielders (2B, SS) always move towards the ball, either to field it, or to cover a base.",
+  "Outside infielders (1B, 3B) if they are not fielding the ball, always move away from it, this generally means they cover their assigned base.",
+  "Pitchers always stay on the mound, unless there is a wild pitch or errant throw to home, then they cover home plate while the catcher gets the ball.",
+  "Middle infielders should back up the pitcher on every return throw from the catcher, in case the pitcher misses it.",
+  "First basemen should back up throws to the pitcher from left field.",
+  "With a runner on second, third basemen should cover third on every pitch that isn't hit. This is to deter that runner from trying to steal third base.",
+  "With a runner on second, the left outfielder should back up 3rd base on every pitch that isn't hit, in case the catcher actually throws to third base.",
+  "Outfielders should throw the ball in as quickly as possible. They should never hold the ball. When in doubt throw to cutoff or the pitcher.",
+  "Bunts are referred to as a \"weak ground ball\".",
+  "On fly balls to center field, the Shortstop becomes the cutoff/relay and the second baseman covers second base.",
+];
