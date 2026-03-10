@@ -152,8 +152,8 @@ function refreshCurrentScreenIfNeeded() {
   const active = document.querySelector('.screen--active');
   if (!active) return;
   const id = active.id;
-  if (id === 'screen-home') showHomeScreen();
-  else if (id === 'screen-leaderboard') showLeaderboard();
+  if (id === 'screen-home') renderHomeScreenData();
+  else if (id === 'screen-leaderboard') renderLeaderboardData();
   else if (id === 'screen-coaches' && isAdmin(state.currentPlayer)) renderCoachesStatsTab();
 }
 
@@ -302,7 +302,13 @@ async function handleLogin() {
 // ===== HOME SCREEN =====
 function showHomeScreen() {
   showScreen('screen-home');
+  document.getElementById('btn-start').onclick = startRound;
+  document.getElementById('btn-logout').onclick = handleLogout;
+  document.getElementById('btn-leaderboard').onclick = showLeaderboard;
+  renderHomeScreenData();
+}
 
+function renderHomeScreenData() {
   const player = state.players[state.currentPlayer] || { displayName: state.currentPlayer, bestScore: null, gamesPlayed: 0, perfectGames: 0, history: [] };
   const displayName = player.displayName || state.currentPlayer;
 
@@ -312,10 +318,6 @@ function showHomeScreen() {
   document.getElementById('stat-perfect').textContent = player.perfectGames;
 
   renderHistoryList(player.history);
-
-  document.getElementById('btn-start').onclick = startRound;
-  document.getElementById('btn-logout').onclick = handleLogout;
-  document.getElementById('btn-leaderboard').onclick = showLeaderboard;
 
   const statsBtn = document.getElementById('btn-player-stats');
   if (isAdmin(state.currentPlayer)) {
@@ -353,7 +355,11 @@ function handleLogout() {
 // ===== LEADERBOARD SCREEN =====
 function showLeaderboard() {
   showScreen('screen-leaderboard');
+  document.getElementById('btn-leaderboard-back').onclick = showHomeScreen;
+  renderLeaderboardData();
+}
 
+function renderLeaderboardData() {
   const rows = Object.values(state.players)
     .filter(function(p) { return !isAdmin(p.displayName || ''); })
     .sort(function(a, b) { return (b.bestScore ?? -1) - (a.bestScore ?? -1); });
@@ -373,8 +379,6 @@ function showLeaderboard() {
       '</tr>';
     }).join('');
   }
-
-  document.getElementById('btn-leaderboard-back').onclick = showHomeScreen;
 }
 
 // ===== COACHES CORNER SCREEN (admin only) =====
