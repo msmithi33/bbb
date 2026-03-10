@@ -4,7 +4,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "vercel-build": "echo 'no build step'"
+    "vercel-build": "cp -r index.html css js assets img api/"
   },
   "dependencies": {
     "@libsql/client": "^0.14.0",
