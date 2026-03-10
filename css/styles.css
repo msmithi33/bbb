@@ -58,7 +58,7 @@ body {
 
 #park-label {
   position: fixed;
-  bottom: 72px;
+  bottom: 36px;
   left: 12px;
   z-index: 7;
   display: flex;
@@ -340,26 +340,22 @@ body {
 .history-score--perfect { color: var(--yellow-dark); }
 
 /* ===== QUIZ SCREEN ===== */
-#screen-quiz .screen-inner { padding-bottom: 120px; }
+#screen-quiz .screen-inner { padding-bottom: 40px; }
 
 .quiz-footer {
-  position: fixed;
-  bottom: 36px; /* sit above the photo-credit footer */
-  left: 0;
-  right: 0;
-  z-index: 9;
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 10px 16px;
-  background: rgba(0, 0, 0, 0.40);
-  backdrop-filter: blur(4px);
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
 }
 
 .progress-wrap { flex: 1; }
 .progress-bar {
   height: 10px;
-  background: rgba(255,255,255,0.3);
+  background: var(--gray-300);
   border-radius: 999px;
   overflow: hidden;
   margin-bottom: 4px;
@@ -371,7 +367,7 @@ body {
   width: 10%;
   transition: width 0.4s ease;
 }
-.progress-label { font-size: 0.8rem; color: rgba(255,255,255,0.9); font-weight: 600; }
+.progress-label { font-size: 0.8rem; color: var(--gray-700); font-weight: 600; }
 
 .score-badge {
   background: var(--green-field);
@@ -496,7 +492,7 @@ body {
   z-index: 20;
   display: flex;
   align-items: flex-end;
-  padding: 16px 16px 96px; /* 96px clears the quiz footer + photo-credit */
+  padding: 16px 16px 52px;
   background: rgba(0, 0, 0, 0.45);
 }
 
