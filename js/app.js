@@ -338,7 +338,7 @@ function showHomeScreen() {
 
     if (questions.length === saved.questionIds.length) {
       resumeText.textContent =
-        'Round in progress — Question ' + (saved.currentIndex + 1) +
+        'Game in progress — Question ' + (saved.currentIndex + 1) +
         ' of ' + questions.length + ', Score: ' + saved.score;
       btnResume.onclick = function() { resumeRound(saved, questions); };
       resumeBanner.hidden = false;
@@ -389,7 +389,7 @@ function renderHomeScreenData() {
 function renderHistoryList(history) {
   const list = document.getElementById('history-list');
   if (!history || history.length === 0) {
-    list.innerHTML = '<li class="history-empty">No rounds yet — let\'s play!</li>';
+    list.innerHTML = '<li class="history-empty">No games yet — let\'s play!</li>';
     return;
   }
   list.innerHTML = history.map(function(entry) {
@@ -629,7 +629,7 @@ async function renderQuestionStatsTab() {
       });
 
     if (!rows.length) {
-      panel.innerHTML = '<div class="card"><p style="color:var(--gray-500);font-size:0.9rem">No data yet — play some rounds first!</p></div>';
+      panel.innerHTML = '<div class="card"><p style="color:var(--gray-500);font-size:0.9rem">No data yet — play some games first!</p></div>';
       return;
     }
 
@@ -872,7 +872,7 @@ function scoreHeading(score) {
 
 function encouragementMessage(score) {
   if (score === 10) return 'You answered every question correctly! You really know your positions!';
-  if (score >= 8)  return 'Excellent work! You know most of your fielding responsibilities. A few more rounds and you\'ll be perfect!';
+  if (score >= 8)  return 'Excellent work! You know most of your fielding responsibilities. A few more games and you\'ll be perfect!';
   if (score >= 6)  return 'Solid effort! Keep studying the Ball, Base, Backup concept and your score will climb.';
   if (score >= 4)  return 'You\'re learning the game! Review the positions you missed and try again — you\'ve got this.';
   return 'Baseball takes practice — on and off the field! Study each position\'s responsibilities and give it another go.';

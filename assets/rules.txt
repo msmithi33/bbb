@@ -9,3 +9,4 @@
 - With a runner on second, the left outfielder should back up 3rd base on every pitch that isn't hit, in case the catcher actually throws to third base.
 - Outfielders should throw the ball in as quickly as possible. They should never hold the ball.  When in doubt throw to cutoff or the pitcher.
 - Bunts are referred to as a "weak ground ball"
+- On fly balls to center field, the Shortstop becomes the cutoff/relay and the second basement covers second base.

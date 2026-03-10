@@ -270,6 +270,14 @@ body {
 }
 .home-subtitle { color: rgba(255,255,255,0.85); font-size: 0.9rem; }
 
+#resume-text {
+  color: var(--white);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  margin-bottom: 10px;
+}
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -497,9 +505,10 @@ body {
   border-radius: var(--radius-md);
   padding: 18px;
   box-shadow: var(--shadow-md);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 10px;
+  row-gap: 12px;
   width: 100%;
   max-width: 608px;
   margin: 0 auto;
@@ -509,9 +518,10 @@ body {
 .feedback-box--correct .feedback-card { border-left: 5px solid var(--green-field); }
 .feedback-box--wrong   .feedback-card { border-left: 5px solid var(--red-wrong); }
 
-.feedback-icon { font-size: 1.8rem; }
+.feedback-icon { font-size: 1.8rem; line-height: 1.4; }
 .feedback-text { font-size: 0.95rem; line-height: 1.5; color: var(--gray-900); }
 .feedback-text strong { display: block; font-size: 1.05rem; margin-bottom: 4px; }
+.feedback-card .btn { grid-column: 1 / -1; }
 
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(16px); }

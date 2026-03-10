@@ -239,7 +239,7 @@ window.QUESTIONS = [
     type: "backup",
     runners: "Runner on first",
     ball: "A fly ball is hit to right field.",
-    correct: "base-cover-2b",
+    correct: "backup-relay",
     explanation: "After a catch in right field, be ready near second — the runner may try to advance on the throw."
   },
   {
@@ -257,17 +257,17 @@ window.QUESTIONS = [
     type: "base",
     runners: "Runners on first and third",
     ball: "A fly ball is hit to center field.",
-    correct: "backup-relay",
-    explanation: "Read the play — with runners on corners, position yourself as relay to hold or put out an advancing runner."
+    correct: "base-cover-2b",
+    explanation: "On fly balls to center field, the second baseman covers second base — the shortstop takes the relay. Stay anchored at second to handle any throw."
   },
   {
     id: "Q29",
     position: "Second Base (2B)",
     type: "ball",
     runners: "No runners on base",
-    ball: "A hard grounder is hit up the middle — you range far to your right to field it.",
-    correct: "ball-flip-pitcher",
-    explanation: "When you range far right, flip it to the pitcher covering first — you may not have time to set up for a full throw."
+    ball: "A hard grounder is hit up the middle",
+    correct: "ball-throw-1b",
+    explanation: "Dive! Stop that ball from getting through! It's okay if you can't make the throw to first base in time."
   },
   {
     id: "Q30",
@@ -294,9 +294,9 @@ window.QUESTIONS = [
     position: "Shortstop (SS)",
     type: "ball",
     runners: "Runner on first",
-    ball: "A ground ball is hit to the third base side of the infield.",
+    ball: "A ground ball is hit to the third baseman.",
     correct: "base-cover-3b",
-    explanation: "The second baseman covers second base. You moved toward the ball (3B side), so you're in position to cover third in case the runner advances past second. Middle infielders always run towards the ball!"
+    explanation: "The second baseman covers second base in this case. You, as the shortstop, cover third in case the runner advances past second. Middle infielders always run towards the ball!"
   },
   {
     id: "Q33",
@@ -305,7 +305,7 @@ window.QUESTIONS = [
     runners: "Runner on second",
     ball: "A ground ball is hit to first base.",
     correct: "base-cover-2b",
-    explanation: "When the is hit between first and second, the Shortstop covers second base."
+    explanation: "When the ball is hit to first base, the shortstop covers second — second base needs to be covered in case the first baseman charges the ball and the runner on second tries to advance."
   },
   {
     id: "Q34",
@@ -358,8 +358,8 @@ window.QUESTIONS = [
     type: "backup",
     runners: "Runners on first and second",
     ball: "A fly ball is hit to center field.",
-    correct: "base-cover-2b",
-    explanation: "With runners on first and second after a caught fly, be at second base to handle a possible throw from center."
+    correct: "backup-relay",
+    explanation: "On fly balls to center field, the shortstop is the cutoff/relay man — move into the outfield grass between the centerfielder and second base so any throw comes through you."
   },
   {
     id: "Q40",
@@ -405,8 +405,8 @@ window.QUESTIONS = [
     type: "backup",
     runners: "Runner on second — heading to third",
     ball: "A single is hit to right field.",
-    correct: "ball-tag-runner",
-    explanation: "You're the receiving end of a classic right-field-to-third throw. Set up on the infield side of the bag and tag low."
+    correct: "base-cover-3b",
+    explanation: "There's a good chance the runner on second is scoring, but the hitter might still try to stretch it to 3, be ready to make the play!"
   },
   {
     id: "Q45",
@@ -458,9 +458,9 @@ window.QUESTIONS = [
     position: "Third Base (3B)",
     type: "ball",
     runners: "Runner on second",
-    ball: "A hard shot is hit down the third base line — you backhand it.",
+    ball: "A hard shot is hit down the third base line.",
     correct: "ball-hold-return",
-    explanation: "When you can't get the batter-runner at first, hold the runner at second."
+    explanation: "When you can't get the batter-runner at first, hold the runner at second. That's a tough play at first -- it's better to keep the runner from advancing."
   },
 
   // ===== LEFT FIELD (LF) — 5 questions =====
