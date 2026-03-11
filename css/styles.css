@@ -171,6 +171,17 @@ body {
 
 .field-error { color: var(--red-wrong); font-size: 0.85rem; font-weight: 600; }
 
+.name-warning {
+  color: #7a5c00;
+  background: #fff8e1;
+  border: 1px solid #f9a825;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  padding: 0.5rem 0.75rem;
+  line-height: 1.45;
+}
+.name-warning a { color: #5c4000; font-weight: 600; cursor: pointer; text-decoration: underline; }
+
 .welcome-back {
   color: var(--green-field);
   font-size: 0.95rem;
@@ -628,6 +639,17 @@ body {
 }
 
 .photo-credit a:hover { color: var(--white); }
+
+.version-badge {
+  position: fixed;
+  bottom: 4px;
+  right: 8px;
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.45);
+  z-index: 11;
+  pointer-events: none;
+  letter-spacing: 0.03em;
+}
 
 /* ===== COACHES CORNER ===== */
 .coaches-tabs {

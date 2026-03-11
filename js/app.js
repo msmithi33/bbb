@@ -80,6 +80,19 @@ function normalizeName(name) {
   return String(name).trim().toLowerCase();
 }
 
+function looksLikeFakeName(name) {
+  const n = name.trim().toLowerCase();
+  if (n.startsWith('coach')) return false;
+  if (n.length < 2) return true;
+  if (/^\d+$/.test(n)) return true;
+  if (/^(qwer|asdf|zxcv)/.test(n)) return true;
+  if (n.length > 3 && !/[aeiou]/.test(n)) return true;
+  if (/(.)\1{2,}/.test(n)) return true;
+  const BLOCKLIST = ['test','asdf','qwerty','player','user','anon','anonymous','foo','bar','fake','unknown','nobody','name','abc','xyz','hello'];
+  if (BLOCKLIST.includes(n)) return true;
+  return false;
+}
+
 // ===== BACKGROUND ROTATION =====
 function rotateBg() {
   const overlay = document.getElementById('bg-overlay');
@@ -260,16 +273,21 @@ function buildAnswerOptions(question) {
 }
 
 // ===== LOGIN SCREEN =====
+let confirmedFakeName = false;
+
 function initLoginScreen() {
   const input = document.getElementById('name-input');
   const welcomeBack = document.getElementById('welcome-back');
   const welcomeName = document.getElementById('welcome-name');
   const error = document.getElementById('name-error');
+  const warning = document.getElementById('name-warning');
 
   // Reset state
+  confirmedFakeName = false;
   input.value = '';
   welcomeBack.hidden = true;
   error.hidden = true;
+  warning.hidden = true;
   input.classList.remove('input--error');
   input.focus();
 
@@ -277,6 +295,8 @@ function initLoginScreen() {
     const name = input.value.trim();
     const key = normalizeName(name);
     error.hidden = true;
+    warning.hidden = true;
+    confirmedFakeName = false;
     input.classList.remove('input--error');
     if (name.length > 0) {
       const player = state.players[key];
@@ -303,12 +323,26 @@ function initLoginScreen() {
 async function handleLogin() {
   const input = document.getElementById('name-input');
   const error = document.getElementById('name-error');
+  const warning = document.getElementById('name-warning');
   const name = input.value.trim();
 
   if (!name) {
     error.hidden = false;
+    warning.hidden = true;
     input.classList.add('input--error');
     input.focus();
+    return;
+  }
+
+  if (!confirmedFakeName && looksLikeFakeName(name)) {
+    warning.innerHTML =
+      'Hey! Your teammates will see this name on the leaderboard \u2014 using your real name helps them cheer you on \uD83C\uDF89 ' +
+      '<a id="use-name-anyway">Carry on with \u201c' + name + '\u201d anyway.</a>';
+    warning.hidden = false;
+    document.getElementById('use-name-anyway').addEventListener('click', function() {
+      confirmedFakeName = true;
+      handleLogin();
+    });
     return;
   }
 
@@ -920,6 +954,9 @@ window.addEventListener('popstate', function(e) {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+  const vb = document.getElementById('version-badge');
+  if (vb && window.APP_VERSION) vb.textContent = window.APP_VERSION;
+
   // Wait one frame for the SVG image to size itself before measuring
   requestAnimationFrame(() => {
     syncHeaderHeight();
