@@ -148,7 +148,7 @@ window.QUESTIONS = [
     runners: "Runner on second",
     ball: "A fly ball is hit to left field.",
     correct: "backup-2b",
-    explanation: "After a caught fly with a runner on second, drift behind second base in case the throw comes in there."
+    explanation: "The batter-runner may try to stretch to second if the left fielder doesn't field it cleanly. Drift behind second base so you're ready for a throw."
   },
   {
     id: "Q17",
@@ -489,7 +489,7 @@ window.QUESTIONS = [
     runners: "No runners on base",
     ball: "A ground ball is hit to third base.",
     correct: "backup-3b",
-    explanation: "Left fielder backs up third base on all throws from the right side of the infield — your job is to prevent a ball from going into the corner."
+    explanation: "Left fielder always backs up third base on ground balls hit there — if the third baseman misses it, you're the last line of defense to stop the ball from rolling into the corner."
   },
   {
     id: "Q54",
@@ -498,16 +498,16 @@ window.QUESTIONS = [
     runners: "Runner on second — rounding third heading home",
     ball: "A single is hit to you in left field.",
     correct: "ball-cutoff",
-    explanation: "Runner heading home — you probably can't outthrow the runner.  Get it to the cutoff/pitcher as fast as you can."
+    explanation: "The runner is heading home — you probably can't get the ball to home in time.  Get it to the cutoff/pitcher as fast as you can."
   },
   {
     id: "Q55",
     position: "Left Field (LF)",
     type: "backup",
     runners: "Runner on first",
-    ball: "A ground ball is hit to the left side of the infield.",
-    correct: "backup-2b",
-    explanation: "Outfielders back up all infield throws — left fielder should drift toward second in case of a bad throw that gets into the outfield."
+    ball: "A ground ball is hit between 2nd and 3rd.",
+    correct: "backup-play",
+    explanation: "Outfielders back up all infield plays — The left fielder should be ready to get the ball if gets past the the shortstop and third baseman."
   },
 
   // ===== CENTER FIELD (CF) — 5 questions =====
@@ -552,9 +552,9 @@ window.QUESTIONS = [
     position: "Center Field (CF)",
     type: "backup",
     runners: "Runner on first",
-    ball: "A ground ball is hit to the right side of the infield.",
-    correct: "backup-2b",
-    explanation: "Center fielder should always drift behind second base on ground balls to the right side — be the safety net."
+    ball: "A ground ball is hit between 1st and 2nd.",
+    correct: "backup-play",
+    explanation: "Center fielder should back up plays up the middle — be the safety net if the infielders can't get the ball."
   },
 
   // ===== RIGHT FIELD (RF) — 5 questions =====
@@ -564,8 +564,8 @@ window.QUESTIONS = [
     type: "ball",
     runners: "Runner on second — heading home",
     ball: "A single is hit to you in right field.",
-    correct: "ball-throw-home",
-    explanation: "Right fielder has one of the strongest throw lanes in baseball — right to home. Charge it, crow-hop, and fire home."
+    correct: "ball-cutoff",
+    explanation: "As right fielder, attack the ball — don't let it play you. Get to it quickly and fire to the cut-off to limit the runner."
   },
   {
     id: "Q62",
@@ -573,8 +573,8 @@ window.QUESTIONS = [
     type: "backup",
     runners: "No runners on base",
     ball: "A ground ball is hit to first base.",
-    correct: "backup-1b",
-    explanation: "Right fielder backs up first base on all ground balls — move toward the first base line to stop any errant throw."
+    correct: "backup-play",
+    explanation: "Right fielder backs up first base on ground balls up the line — move toward the first base line to stop what the first baseman misses."
   },
   {
     id: "Q63",
@@ -592,16 +592,16 @@ window.QUESTIONS = [
     runners: "Runner on first — tagging up",
     ball: "A fly ball is hit to you. You catch it.",
     correct: "ball-throw-2b",
-    explanation: "If the runner tags from first, your throw goes to second — don't overthrow to third."
+    explanation: "If the runner tags from first, your throw goes to second.  Hit the cutoff if you can't reach 2nd accurately."
   },
   {
     id: "Q65",
     position: "Right Field (RF)",
     type: "backup",
     runners: "Runner on first",
-    ball: "A ground ball is hit to second base.",
-    correct: "backup-1b",
-    explanation: "Right fielder backs up first base on all infield ground balls — especially important on plays to the right side."
+    ball: "A ground ball is hit to the second baseman.",
+    correct: "backup-play",
+    explanation: "Right fielder backs up all infield ground balls to the right side."
   }
 
 ];

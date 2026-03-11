@@ -45,6 +45,7 @@ window.ANSWERS = [
   { id: 'backup-rf',        text: 'Back up the right fielder',                                cat: 'backup', pos: ['CF'] },
   { id: 'backup-lf',        text: 'Back up the left fielder',                                 cat: 'backup', pos: ['CF'] },
   { id: 'backup-cf',        text: 'Back up the center fielder',                               cat: 'backup', pos: ['LF','RF'] },
+  { id: 'backup-play',      text: 'Back up the infielder making the play',                    cat: 'backup', pos: ['CF','LF','RF'] },
 
   // ===== JOKE — wrong every time =====
   { id: 'joke-daisies',     text: 'It\'s too hard to get it. Let someone else do it.',        cat: 'joke',   pos: 'all' },

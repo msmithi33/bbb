@@ -11,4 +11,5 @@ window.RULES = [
   "Outfielders should throw the ball in as quickly as possible. They should never hold the ball. When in doubt throw to cutoff or the pitcher.",
   "Bunts are referred to as a \"weak ground ball\".",
   "On fly balls to center field, the Shortstop becomes the cutoff/relay and the second baseman covers second base.",
+  "On ground balls to the infield, the outfielders will back up which ever infielder is making the play.",
 ];
