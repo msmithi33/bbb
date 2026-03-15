@@ -608,7 +608,7 @@ function renderCoachesStatsTab() {
       '</tr>';
     }).join('');
 
-    tbody.addEventListener('click', async function(e) {
+    tbody.onclick = async function(e) {
       const btn = e.target.closest('.action-remove');
       if (!btn) return;
       const key = btn.getAttribute('data-key');
@@ -620,7 +620,7 @@ function renderCoachesStatsTab() {
         renderLeaderboardData();
         renderCoachesStatsTab();
       }
-    });
+    };
   }
 
   populateMergeSelects(state.players);
