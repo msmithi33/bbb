@@ -4,6 +4,7 @@
 // ===== CONSTANTS =====
 const STORAGE_CURRENT = 'bbb_currentPlayer';
 const STORAGE_ROUND = 'bbb_round';
+const STORAGE_LOCAL_PLAYERS = 'bbb_localPlayers';
 const ROUND_SIZE = 10;
 const MAX_HISTORY = 5;
 const WRONG_CHOICES = 4; // wrong answers shown per question
@@ -177,6 +178,22 @@ function saveCurrentPlayer(name) {
   }
 }
 
+function loadLocalPlayers() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_LOCAL_PLAYERS) || '[]');
+  } catch(e) { return []; }
+}
+
+function addLocalPlayer(key, displayName) {
+  try {
+    const list = loadLocalPlayers();
+    if (!list.find(function(p) { return p.key === key; })) {
+      list.push({ key: key, displayName: displayName });
+      localStorage.setItem(STORAGE_LOCAL_PLAYERS, JSON.stringify(list));
+    }
+  } catch(e) {}
+}
+
 function saveRoundState() {
   const key = STORAGE_ROUND + '_' + state.currentPlayer;
   const payload = {
@@ -276,60 +293,97 @@ function buildAnswerOptions(question) {
 let confirmedFakeName = false;
 
 function initLoginScreen() {
-  const input = document.getElementById('name-input');
-  const welcomeBack = document.getElementById('welcome-back');
-  const welcomeName = document.getElementById('welcome-name');
+  const select = document.getElementById('player-select');
   const error = document.getElementById('name-error');
-  const warning = document.getElementById('name-warning');
 
-  // Reset state
   confirmedFakeName = false;
-  input.value = '';
-  welcomeBack.hidden = true;
-  error.hidden = true;
-  warning.hidden = true;
-  input.classList.remove('input--error');
-  input.focus();
 
-  function checkWelcomeBack() {
-    const name = input.value.trim();
-    const key = normalizeName(name);
-    error.hidden = true;
-    warning.hidden = true;
-    confirmedFakeName = false;
-    input.classList.remove('input--error');
-    if (name.length > 0) {
-      const player = state.players[key];
-      if (player) {
-        welcomeName.textContent = player.displayName || name;
-        welcomeBack.hidden = false;
-      } else {
-        welcomeBack.hidden = true;
-      }
-    } else {
-      welcomeBack.hidden = true;
-    }
-  }
-
-  input.addEventListener('input', checkWelcomeBack);
-
-  input.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') handleLogin();
+  // Rebuild dropdown options
+  select.innerHTML = '<option value="">Play as...</option>';
+  loadLocalPlayers().forEach(function(p) {
+    const opt = document.createElement('option');
+    opt.value = p.key;
+    opt.textContent = p.displayName;
+    select.appendChild(opt);
   });
+  const newOpt = document.createElement('option');
+  newOpt.value = '__new__';
+  newOpt.textContent = '+ New Player';
+  select.appendChild(newOpt);
+
+  select.value = '';
+  error.hidden = true;
+
+  select.onchange = function() {
+    if (select.value === '__new__') {
+      select.value = '';
+      openNewPlayerModal();
+    }
+    error.hidden = true;
+  };
 
   document.getElementById('btn-play').onclick = handleLogin;
 }
 
-async function handleLogin() {
+function openNewPlayerModal() {
+  confirmedFakeName = false;
+  const modal = document.getElementById('new-player-modal');
   const input = document.getElementById('name-input');
-  const error = document.getElementById('name-error');
+  const errorModal = document.getElementById('name-error-modal');
+  const warning = document.getElementById('name-warning');
+  input.value = '';
+  errorModal.hidden = true;
+  warning.hidden = true;
+  modal.hidden = false;
+  input.focus();
+
+  document.getElementById('btn-modal-cancel').onclick = closeNewPlayerModal;
+
+  input.onkeydown = function(e) {
+    if (e.key === 'Enter') handleAddNewPlayer();
+    if (e.key === 'Escape') closeNewPlayerModal();
+  };
+
+  const addBtn = document.getElementById('btn-modal-add');
+  addBtn.textContent = 'Add Player';
+  addBtn.onclick = handleAddNewPlayer;
+}
+
+function closeNewPlayerModal() {
+  document.getElementById('new-player-modal').hidden = true;
+}
+
+function handleAddNewPlayer() {
+  const input = document.getElementById('name-input');
+  const errorModal = document.getElementById('name-error-modal');
   const warning = document.getElementById('name-warning');
   const name = input.value.trim();
 
+  errorModal.hidden = true;
+  warning.hidden = true;
+
   if (!name) {
-    error.hidden = false;
-    warning.hidden = true;
-    input.classList.add('input--error');
+    errorModal.textContent = 'Almost! Just enter your name above to get started.';
+    errorModal.hidden = false;
+    input.focus();
+    return;
+  }
+
+  const key = normalizeName(name);
+  if (state.players[key]) {
+    // Soft confirmation — let them claim the name on this device
+    errorModal.textContent = '"' + name + '" is already registered. Is this you?';
+    errorModal.hidden = false;
+    const addBtn = document.getElementById('btn-modal-add');
+    addBtn.textContent = "Yes, that's me";
+    addBtn.onclick = function() {
+      const displayName = state.players[key].displayName || name;
+      addLocalPlayer(key, displayName);
+      closeNewPlayerModal();
+      state.currentPlayer = key;
+      saveCurrentPlayer(key);
+      apiUpsertPlayer(key, displayName).then(showHomeScreen);
+    };
     input.focus();
     return;
   }
@@ -341,15 +395,37 @@ async function handleLogin() {
     warning.hidden = false;
     document.getElementById('use-name-anyway').addEventListener('click', function() {
       confirmedFakeName = true;
-      handleLogin();
+      handleAddNewPlayer();
     });
     return;
   }
 
-  const key = normalizeName(name);
+  // All good — add locally, close modal, log in
+  addLocalPlayer(key, name);
+  closeNewPlayerModal();
   state.currentPlayer = key;
   saveCurrentPlayer(key);
-  await apiUpsertPlayer(key, name.trim());
+  apiUpsertPlayer(key, name).then(showHomeScreen);
+}
+
+async function handleLogin() {
+  const select = document.getElementById('player-select');
+  const error = document.getElementById('name-error');
+  const key = select.value;
+
+  if (!key || key === '__new__') {
+    error.hidden = false;
+    return;
+  }
+
+  error.hidden = true;
+  const localPlayers = loadLocalPlayers();
+  const player = localPlayers.find(function(p) { return p.key === key; });
+  const displayName = (player && player.displayName) || key;
+
+  state.currentPlayer = key;
+  saveCurrentPlayer(key);
+  await apiUpsertPlayer(key, displayName);
   showHomeScreen();
 }
 
@@ -539,6 +615,10 @@ function renderCoachesStatsTab() {
       const name = btn.closest('tr').querySelector('td').textContent;
       if (confirm('Remove ' + name + '? This cannot be undone.')) {
         await apiDeletePlayer(key);
+        state.players = await fetchPlayers();
+        renderHomeScreenData();
+        renderLeaderboardData();
+        renderCoachesStatsTab();
       }
     });
   }
@@ -714,7 +794,11 @@ function populateMergeSelects(players) {
     const dropName = (state.players[dropKey] || {}).displayName || dropKey;
     if (confirm('Merge "' + dropName + '" into "' + keepName + '"? "' + dropName + '" will be deleted.')) {
       await apiMergePlayers(keepKey, dropKey);
-      // WS push will refresh the screen automatically
+      state.players = await fetchPlayers();
+      renderHomeScreenData();
+      renderLeaderboardData();
+      renderCoachesStatsTab();
+      showMergeStatus('"' + dropName + '" merged into "' + keepName + '" successfully.', true);
     }
   };
 }
@@ -928,6 +1012,8 @@ async function init() {
   if (savedPlayer) {
     const key = normalizeName(savedPlayer);
     if (state.players[key]) {
+      const displayName = state.players[key].displayName || key;
+      addLocalPlayer(key, displayName);
       state.currentPlayer = key;
       showHomeScreen();
       return;

@@ -182,10 +182,34 @@ body {
 }
 .name-warning a { color: #5c4000; font-weight: 600; cursor: pointer; text-decoration: underline; }
 
-.welcome-back {
+/* ===== NEW PLAYER MODAL ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.modal-title {
+  font-size: 1.1rem;
+  font-weight: 800;
   color: var(--green-field);
-  font-size: 0.95rem;
-  font-weight: 600;
+  margin: 0;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
 }
 
 /* ===== BUTTONS ===== */
