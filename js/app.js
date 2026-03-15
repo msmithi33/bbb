@@ -528,14 +528,23 @@ function showLeaderboard() {
   renderLeaderboardData();
 }
 
+function gamePoints(score) {
+  return score > 5 ? score + 5 + (score === 10 ? 5 : 0) : 0;
+}
+
+function totalPoints(player) {
+  return (player.history || []).reduce(function(sum, g) { return sum + gamePoints(g.score); }, 0);
+}
+
 function renderLeaderboardData() {
   const rows = Object.values(state.players)
     .filter(function(p) { return !isAdmin(p.displayName || ''); })
-    .sort(function(a, b) { return (b.bestScore ?? -1) - (a.bestScore ?? -1); });
+    .map(function(p) { return Object.assign({}, p, { _points: totalPoints(p) }); })
+    .sort(function(a, b) { return b._points - a._points; });
 
   const tbody = document.getElementById('leaderboard-body');
   if (rows.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--gray-500);padding:20px;">No players yet!</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--gray-500);padding:20px;">No players yet!</td></tr>';
   } else {
     tbody.innerHTML = rows.map(function(p, i) {
       const isMe = (p.displayName || '').toLowerCase() === state.currentPlayer;
@@ -545,6 +554,7 @@ function renderLeaderboardData() {
         '<td>' + (p.bestScore !== null && p.bestScore !== undefined ? p.bestScore + '/10' : '—') + '</td>' +
         '<td>' + (p.gamesPlayed || 0) + '</td>' +
         '<td>' + (p.perfectGames || 0) + '</td>' +
+        '<td>' + p._points + '</td>' +
       '</tr>';
     }).join('');
   }
