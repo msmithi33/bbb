@@ -10,7 +10,6 @@ const db = createClient({
 });
 
 const ROUND_SIZE  = 10;
-const MAX_HISTORY = 5;
 
 // Ensure schema exists — runs once per warm instance
 let dbReady = false;
@@ -127,7 +126,7 @@ app.post('/api/players/merge', async (req, res) => {
     const newPerfect = (Number(keeper.perfectGames) || 0) + (Number(dropped.perfectGames) || 0);
     const rawBest    = Math.max(keeper.bestScore ?? -1, dropped.bestScore ?? -1);
     const newBest    = rawBest === -1 ? null : rawBest;
-    const combined   = JSON.parse(keeper.history).concat(JSON.parse(dropped.history)).slice(0, MAX_HISTORY);
+    const combined   = JSON.parse(keeper.history).concat(JSON.parse(dropped.history));
 
     await db.batch([
       {
@@ -169,7 +168,6 @@ app.post('/api/players/:key/game', async (req, res) => {
     const newPerfect = Number(player.perfectGames) + (score === ROUND_SIZE ? 1 : 0);
 
     history.unshift({ date: new Date().toLocaleDateString(), score });
-    if (history.length > MAX_HISTORY) history.length = MAX_HISTORY;
 
     await db.execute({
       sql: 'UPDATE players SET bestScore=?, gamesPlayed=?, perfectGames=?, history=? WHERE key=?',

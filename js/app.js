@@ -485,7 +485,7 @@ function renderHomeScreenData() {
   document.getElementById('stat-games').textContent = player.gamesPlayed;
   document.getElementById('stat-perfect').textContent = player.perfectGames;
 
-  renderHistoryList(player.history);
+  renderHistoryList((player.history || []).slice(0, 5));
 
   const statsBtn = document.getElementById('btn-player-stats');
   if (isAdmin(state.currentPlayer)) {
