@@ -32,6 +32,9 @@ async function ensureDb() {
       times_wrong  INTEGER NOT NULL DEFAULT 0
     )
   `);
+  try {
+    await db.execute('ALTER TABLE players ADD COLUMN totalPoints INTEGER NOT NULL DEFAULT 0');
+  } catch (_) { /* column already exists */ }
   dbReady = true;
 }
 
@@ -44,6 +47,7 @@ async function getAllPlayers() {
       bestScore:    row.bestScore,
       gamesPlayed:  row.gamesPlayed,
       perfectGames: row.perfectGames,
+      totalPoints:  row.totalPoints || 0,
       history:      JSON.parse(row.history),
     };
   }
@@ -126,17 +130,36 @@ app.post('/api/players/merge', async (req, res) => {
     const newPerfect = (Number(keeper.perfectGames) || 0) + (Number(dropped.perfectGames) || 0);
     const rawBest    = Math.max(keeper.bestScore ?? -1, dropped.bestScore ?? -1);
     const newBest    = rawBest === -1 ? null : rawBest;
+    const newPoints  = (Number(keeper.totalPoints) || 0) + (Number(dropped.totalPoints) || 0);
     const combined   = JSON.parse(keeper.history).concat(JSON.parse(dropped.history));
 
     await db.batch([
       {
-        sql: 'UPDATE players SET gamesPlayed=?, perfectGames=?, bestScore=?, history=? WHERE key=?',
-        args: [newGames, newPerfect, newBest, JSON.stringify(combined), keepKey],
+        sql: 'UPDATE players SET gamesPlayed=?, perfectGames=?, bestScore=?, totalPoints=?, history=? WHERE key=?',
+        args: [newGames, newPerfect, newBest, newPoints, JSON.stringify(combined), keepKey],
       },
       { sql: 'DELETE FROM players WHERE key=?', args: [dropKey] },
     ], 'write');
 
     res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// POST /api/players/recalc-points  — one-time migration: seed totalPoints from stats
+app.post('/api/players/recalc-points', async (_req, res) => {
+  try {
+    const { rows } = await db.execute('SELECT * FROM players');
+    const stmts = rows.map(row => {
+      const perfect    = Number(row.perfectGames) || 0;
+      const nonPerfect = Math.max(0, (Number(row.gamesPlayed) || 0) - perfect);
+      const best       = row.bestScore !== null ? Number(row.bestScore) : 0;
+      const npScore    = best === 10 ? 9 : best;
+      const npPoints   = npScore > 5 ? npScore + 5 : 0;
+      const total      = perfect * 20 + nonPerfect * npPoints;
+      return { sql: 'UPDATE players SET totalPoints=? WHERE key=?', args: [total, row.key] };
+    });
+    if (stmts.length > 0) await db.batch(stmts, 'write');
+    res.json({ ok: true, playersUpdated: stmts.length });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -162,16 +185,18 @@ app.post('/api/players/:key/game', async (req, res) => {
     const player = rows[0];
     if (!player) return res.status(404).json({ error: 'Player not found' });
 
-    const history    = JSON.parse(player.history);
-    const newBest    = (player.bestScore === null || score > player.bestScore) ? score : Number(player.bestScore);
-    const newGames   = Number(player.gamesPlayed) + 1;
-    const newPerfect = Number(player.perfectGames) + (score === ROUND_SIZE ? 1 : 0);
+    const history      = JSON.parse(player.history);
+    const newBest      = (player.bestScore === null || score > player.bestScore) ? score : Number(player.bestScore);
+    const newGames     = Number(player.gamesPlayed) + 1;
+    const newPerfect   = Number(player.perfectGames) + (score === ROUND_SIZE ? 1 : 0);
+    const pointsEarned = score > 5 ? score + 5 + (score === ROUND_SIZE ? 5 : 0) : 0;
+    const newPoints    = (Number(player.totalPoints) || 0) + pointsEarned;
 
     history.unshift({ date: new Date().toLocaleDateString(), score });
 
     await db.execute({
-      sql: 'UPDATE players SET bestScore=?, gamesPlayed=?, perfectGames=?, history=? WHERE key=?',
-      args: [newBest, newGames, newPerfect, JSON.stringify(history), key],
+      sql: 'UPDATE players SET bestScore=?, gamesPlayed=?, perfectGames=?, totalPoints=?, history=? WHERE key=?',
+      args: [newBest, newGames, newPerfect, newPoints, JSON.stringify(history), key],
     });
 
     res.json((await getAllPlayers())[key]);

@@ -533,7 +533,7 @@ function gamePoints(score) {
 }
 
 function totalPoints(player) {
-  return (player.history || []).reduce(function(sum, g) { return sum + gamePoints(g.score); }, 0);
+  return player.totalPoints || 0;
 }
 
 function renderLeaderboardData() {

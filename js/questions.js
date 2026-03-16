@@ -395,7 +395,7 @@ window.QUESTIONS = [
     position: "Third Base (3B)",
     type: "ball",
     runners: "Runner on first",
-    ball: "The batter hits a weak ground ball toward home plate.",
+    ball: "The batter hits a weak ground ball down the left field line.",
     correct: "ball-throw-1b",
     explanation: "Charge hard toward the ball, field it, then throw to first base for the out — third baseman owns weak ground balls near home plate."
   },
